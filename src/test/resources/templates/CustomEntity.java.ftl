@@ -26,9 +26,7 @@ import lombok.experimental.Accessors;
     <#if superEntityClass??>
 @EqualsAndHashCode(callSuper = true)
     <#else>
-@EqualsAndHashCode(callSuper = false)
     </#if>
-@Accessors(chain = true)
 </#if>
 <#if table.convert>
 @TableName("${table.name}")
@@ -55,7 +53,10 @@ public class ${entity} implements Serializable {
 
     <#if field.comment!?length gt 0>
         <#if swagger2>
-    @ApiModelProperty(value = "${field.comment}")
+    @ApiModelProperty(value = "${field.comment}", name = "${field.propertyName}", example = "")
+    /**
+     * ${field.comment}
+     */
         <#else>
     /**
      * ${field.comment}

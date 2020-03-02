@@ -17,6 +17,7 @@ import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
 import com.baomidou.mybatisplus.generator.config.TemplateConfig;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import lombok.extern.slf4j.Slf4j;
@@ -83,13 +84,15 @@ public class MysqlGenerator {
         // 3.3.0 版本开始, 使用 ASSIGN_ID代替ID_WORKER 生成分布式全局唯一ID
         // 默认使用雪花算法
         gc.setIdType(IdType.ASSIGN_ID);
+        gc.setDateType(DateType.ONLY_DATE);
 
         gc.setFileOverride(true);
+
         mpg.setGlobalConfig(gc);
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://localhost:3306/mybatisplus-demo?useUnicode=true&serverTimezone=GMT&useSSL=false&characterEncoding=utf8");
+        dsc.setUrl("jdbc:mysql://localhost:3306/ngs_system?useUnicode=true&serverTimezone=GMT&useSSL=false&characterEncoding=utf8");
         // dsc.setSchemaName("public");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("root");
@@ -99,7 +102,7 @@ public class MysqlGenerator {
         // 包配置
         PackageConfig pc = new PackageConfig();
         pc.setModuleName(scanner("模块名"));
-        pc.setParent("com.fancyliu.mybatisplusdemo.generator");
+        pc.setParent("com.gyenno.ngs.system");
         mpg.setPackageInfo(pc);
 
         // 自定义配置
@@ -144,10 +147,10 @@ public class MysqlGenerator {
         TemplateConfig templateConfig = new TemplateConfig();
 
         // 配置自定义输出模板
-        //指定自定义模板路径，注意不要带上.ftl/.vm, 会根据使用的模板引擎自动识别
+        // 指定自定义模板路径，注意不要带上.ftl/.vm, 会根据使用的模板引擎自动识别
         // templateConfig.setEntity("templates/entity2.java");
         // templateConfig.setService();
-        // templateConfig.setController();
+        templateConfig.setController(projectPath + "templates/CustomController.java");
 
         templateConfig.setXml(null);
         mpg.setTemplate(templateConfig);
@@ -159,6 +162,8 @@ public class MysqlGenerator {
         // 你自己的父类实体,没有就不用设置!
 //        strategy.setSuperEntityClass("com.baomidou.mybatisplus.samples.generator.common.BaseEntity");
         strategy.setEntityLombokModel(true);
+        strategy.setEntityBooleanColumnRemoveIsPrefix(true);
+        strategy.setEntityTableFieldAnnotationEnable(true);
 
         strategy.setRestControllerStyle(true);
         // 公共父类,你自己的父类控制器,没有就不用设置!

@@ -37,7 +37,6 @@ import io.swagger.annotations.ApiOperation;
 </#if>
 <#if swagger2>
 @Api(value = "${entity}", tags = {"${entity}接口"})
-@ApiModel(value="${entity}对象", description="${table.comment!}")
 </#if>
 @RequestMapping("<#if package.ModuleName??>/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle??>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
 <#if kotlin>

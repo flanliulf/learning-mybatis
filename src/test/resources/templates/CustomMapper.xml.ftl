@@ -35,5 +35,13 @@
         ${table.fieldNames}
     </sql>
 
+    <!-- 通用查询属性 -->
+    <sql id="Base_Property_List">
+<#list table.commonFields as field>
+         ${field.name} ,
+</#list>
+         ${table.fieldNames}
+    </sql>
+
 </#if>
 </mapper>
