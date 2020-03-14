@@ -1,17 +1,17 @@
 package com.fancyliu.mybatisplusdemo.generator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.generator.config.*;
+import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import org.junit.Test;
 
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
-import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
-import com.baomidou.mybatisplus.generator.config.GlobalConfig;
-import com.baomidou.mybatisplus.generator.config.PackageConfig;
-import com.baomidou.mybatisplus.generator.config.StrategyConfig;
-import com.baomidou.mybatisplus.generator.config.TemplateConfig;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
@@ -29,7 +29,7 @@ public class MpGeneratorTest {
 
     @Test
     public void generateCode() {
-        generate("mysql", "h2user");
+        generate("demo", "t_student,t_grade");
     }
 
     private void generate(String moduleName, String... tableNamesInclude){
@@ -40,6 +40,10 @@ public class MpGeneratorTest {
         String projectPath = System.getProperty("user.dir");
         gc.setOutputDir(projectPath + "/src/main/java");
         gc.setAuthor("fancyliu");
+
+
+        // service接口不采用 I 开头的模式
+        gc.setServiceName("%sService");
         gc.setOpen(false);
         //默认不覆盖，如果文件存在，将不会再生成，配置true就是覆盖
         gc.setFileOverride(true);
@@ -70,7 +74,7 @@ public class MpGeneratorTest {
         strategy.setInclude(tableNamesInclude);
 //        strategy.setSuperEntityColumns("id");
         strategy.setControllerMappingHyphenStyle(true);
-        strategy.setTablePrefix(pc.getModuleName() + "_");
+        strategy.setTablePrefix("t_");
         strategy.entityTableFieldAnnotationEnable(true);
         mpg.setStrategy(strategy);
 
@@ -78,8 +82,25 @@ public class MpGeneratorTest {
         // 选择 freemarker 引擎需要指定如下加，注意 pom 依赖必须有！
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
 
-        configCustomizedCodeTemplate(mpg);
-        configInjection(mpg);
+//        configCustomizedCodeTemplate(mpg);
+//        configInjection(mpg);
+
+        // 如果模板引擎是 freemarker
+        String templatePath = "/templates/mapper.xml.ftl";
+        // 如果模板引擎是 velocity
+        // String templatePath = "/templates/mapper.xml.vm";
+
+        // 自定义输出配置
+        List<FileOutConfig> focList = new ArrayList<>();
+        // 自定义配置会被优先输出
+        focList.add(new FileOutConfig(templatePath) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义输入文件名称,如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
+                return projectPath + "/src/main/resources/mapper/" + pc.getModuleName()
+                        + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+            }
+        });
 
         mpg.execute();
     }

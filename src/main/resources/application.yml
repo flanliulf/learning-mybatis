@@ -5,3 +5,8 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    clean-disabled: false # 生成环境一定要 true
+
+mybatis-plus:
+  mapper-locations: classpath/*Mapper.xml

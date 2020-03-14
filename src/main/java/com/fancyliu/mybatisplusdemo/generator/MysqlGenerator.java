@@ -168,7 +168,8 @@ public class MysqlGenerator {
 //        strategy.setSuperEntityColumns("id");
         strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
         strategy.setControllerMappingHyphenStyle(true);
-        strategy.setTablePrefix(pc.getModuleName() + "_");
+//        strategy.setTablePrefix(pc.getModuleName() + "_");
+        strategy.setTablePrefix("t_");
         mpg.setStrategy(strategy);
 
         // 选择 freemarker 引擎需要指定如下加，注意 pom 依赖必须有！
